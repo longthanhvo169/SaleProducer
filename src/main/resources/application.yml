@@ -1,0 +1,28 @@
+spring:
+  profiles.active: local
+  application:
+    name: SaleProducer
+    version: prod.1.0.0
+  main:
+    allow-bean-definition-overriding: true
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES : false
+    serialization:
+      FAIL_ON_EMPTY_BEANS : false
+
+kafka:
+  producer:
+    client-id: sale-producer
+  admin:
+    client-id: sale-backend
+  bootstrap-server: ${KAFKA_BOOTSTRAP_SERVER}
+
+---
+spring:
+  profiles: local
+
+kafka:
+  bootstrap-server: localhost:9092
