@@ -1,0 +1,2 @@
+#!/bin/bash
+java -XX:MinRAMPercentage=${MIN_MEMORY_PERCENT} -XX:MaxRAMPercentage=${MAX_MEMORY_PERCENT} -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=logs/ -Dspring.profiles.active=$ENV -Dkafka.bootstrap-server=$KAFKA_BOOTSTRAP_SERVER -jar SaleProducer-0.0.1-SNAPSHOT.jar
