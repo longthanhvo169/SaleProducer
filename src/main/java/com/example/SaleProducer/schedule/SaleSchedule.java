@@ -17,7 +17,6 @@ import com.example.SaleProducer.service.KafkaService;
 import com.example.SaleProducer.service.SaleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -44,9 +43,9 @@ public class SaleSchedule {
     private int countToRotateReadFile;
 
     private String fileNames[] = new String[] {
-            "/data/Sales_20221001_20221031.psv",
-            "/data/Sales_20221101_20221130.psv",
-            "/data/Sales_20221201_20221231.psv" };
+            "/Sales_20221001_20221031.psv",
+            "/Sales_20221101_20221130.psv",
+            "/Sales_20221201_20221231.psv"};
 
     @Scheduled(fixedRate = 5000)
     public void sendSales() {
@@ -55,10 +54,7 @@ public class SaleSchedule {
         try {
 
             countToRotateReadFile = countToRotateReadFile % fileNames.length;
-            ClassPathResource resource = new ClassPathResource(fileNames[countToRotateReadFile], this.getClass().getClassLoader());
-            log.info(resource.getFile().toString());
-            //String file = getClass().getResource(fileNames[countToRotateReadFile]).getFile();
-            String file = resource.getFile().toString();
+            String file = getClass().getResource(fileNames[countToRotateReadFile]).getPath();
             countToRotateReadFile++;
 
             List<SaleSummaryDto> saleSummaryList = getSaleSummaryDtos(file);

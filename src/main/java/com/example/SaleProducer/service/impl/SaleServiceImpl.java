@@ -32,7 +32,7 @@ public class SaleServiceImpl implements SaleService {
 
     public static final String SALE_DATE_FORMAT = "YYYYMMDD";
     @Override
-    public List<Sale> convertRecordsToSale(File file) throws IOException, ParseException {
+    public List<Sale> convertRecordsToSale(File file) throws ParseException {
         List<Sale> sales = new ArrayList<>();
         CSVParser csvRecords = CSVUtils.getCSVParser(file, SaleHeader.class);
 

@@ -24,8 +24,8 @@ public class CSVUtils {
 
         log.info("Parsing CSV file {} ...", file.getName());
         try {
-            FileInputStream csvInputStream = new FileInputStream(file);
-            final Reader reader = new BufferedReader(new InputStreamReader(csvInputStream, "UTF-8"));
+            InputStream is = CSVUtils.class.getClassLoader().getResourceAsStream(file.getName());
+            final Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
             final CSVFormat csvFormat = CSVFormat.EXCEL
                     .withHeader(headers)
                     .withDelimiter(CSV_DELIMITER)
