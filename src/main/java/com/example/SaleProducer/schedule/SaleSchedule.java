@@ -9,6 +9,7 @@
 
 package com.example.SaleProducer.schedule;
 
+import com.example.SaleProducer.config.KafkaConfig;
 import com.example.SaleProducer.dto.SaleSummaryDto;
 import com.example.SaleProducer.form.KafkaMessageForm;
 import com.example.SaleProducer.model.Sale;
@@ -21,6 +22,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,7 +37,10 @@ public class SaleSchedule {
     @Autowired
     SaleService saleService;
 
-    private int count;
+    @Autowired
+    KafkaConfig kafkaConfig;
+
+    private int countToRotateReadFile;
 
     private String fileNames[] = new String[] {
             "/data/Sales_20221001_20221031.psv",
@@ -46,23 +52,21 @@ public class SaleSchedule {
 
         String uid = UUID.randomUUID().toString();
         try {
-            count = count % fileNames.length;
-            String file = getClass().getResource(fileNames[count]).getFile();
-            count++;
 
-            List<Sale> saleList = saleService.convertRecordsToSale(new File(file));
-            if(CollectionUtils.isEmpty(saleList)) {
+            countToRotateReadFile = countToRotateReadFile % fileNames.length;
+            String file = getClass().getResource(fileNames[countToRotateReadFile]).getFile();
+            countToRotateReadFile++;
+
+            List<SaleSummaryDto> saleSummaryList = getSaleSummaryDtos(file);
+            if (CollectionUtils.isEmpty(saleSummaryList)) {
+                log.info("List empty...");
                 return;
             }
-            Map<String, SaleSummaryDto> saleSummaryDtoMap = saleService.getStringSaleSummaryDtoMap(saleList);
-
-            List<SaleSummaryDto> saleSummaryList = saleSummaryDtoMap.values().stream().collect(Collectors.toList());
-            Collections.sort(saleSummaryList, Comparator.comparing(SaleSummaryDto::getStoreName));
 
             KafkaMessageForm form = KafkaMessageForm.builder()
                     .uid(uid)
-                    .key("newKey")
-                    .topic("sales")
+                    .key(kafkaConfig.saleTopic().name())
+                    .topic(kafkaConfig.saleTopic().name())
                     .sentAt(new Date())
                     .data(saleSummaryList)
                     .build();
@@ -72,5 +76,17 @@ public class SaleSchedule {
             log.error("Producing Failed - UID: {} - Error: {}", uid, ex);
         }
 
+    }
+
+    private List<SaleSummaryDto> getSaleSummaryDtos(String file) throws IOException, ParseException {
+        List<Sale> saleList = saleService.convertRecordsToSale(new File(file));
+        if(CollectionUtils.isEmpty(saleList)) {
+            return null;
+        }
+        Map<String, SaleSummaryDto> saleSummaryDtoMap = saleService.getStringSaleSummaryDtoMap(saleList);
+
+        List<SaleSummaryDto> saleSummaryList = saleSummaryDtoMap.values().stream().collect(Collectors.toList());
+        Collections.sort(saleSummaryList, Comparator.comparing(SaleSummaryDto::getStoreName));
+        return saleSummaryList;
     }
 }

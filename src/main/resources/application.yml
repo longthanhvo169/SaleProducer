@@ -13,16 +13,16 @@ spring:
     serialization:
       FAIL_ON_EMPTY_BEANS : false
 
-kafka:
-  producer:
-    client-id: sale-producer
-  admin:
-    client-id: sale-backend
-  bootstrap-server: ${KAFKA_BOOTSTRAP_SERVER}
+  kafka:
+    producer:
+      client-id: sale-producer
+    admin:
+      client-id: sale-backend
+    bootstrap-servers: ${KAFKA_SERVER}
 
 ---
 spring:
   profiles: local
 
-kafka:
-  bootstrap-server: localhost:9092
+  kafka:
+    bootstrap-servers: localhost:9092
