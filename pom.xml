@@ -19,6 +19,7 @@
 		<spring.kafka.version>2.7.14</spring.kafka.version>
 		<commons.csv.version>1.4</commons.csv.version>
 		<apache.common.lang.version>3.9</apache.common.lang.version>
+		<org.jeasy.version>4.3.0</org.jeasy.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -61,7 +62,13 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-test</artifactId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jeasy</groupId>
+			<artifactId>easy-random-core</artifactId>
+			<version>${org.jeasy.version}</version>
 			<scope>test</scope>
 		</dependency>
 

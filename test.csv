@@ -1,0 +1,4 @@
+SalesDate,StoreName,ProductName,SalesUnits,SalesRevenue
+20220101|Store A|Product A|10|100.0
+20220102|Store B|Product B|20|200.0
+20220103|Store C|Product C|30|300.0

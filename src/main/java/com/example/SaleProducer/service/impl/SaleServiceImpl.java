@@ -34,7 +34,7 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public List<Sale> convertRecordsToSale(File file) throws IOException, ParseException {
         List<Sale> sales = new ArrayList<>();
-        CSVParser csvRecords = parseRecordsFromFileData(file);
+        CSVParser csvRecords = CSVUtils.getCSVParser(file, SaleHeader.class);
 
         for (CSVRecord record : csvRecords) {
             Sale sale = Sale.builder()
@@ -66,7 +66,4 @@ public class SaleServiceImpl implements SaleService {
         return saleSummaryDtoMap;
     }
 
-    private CSVParser parseRecordsFromFileData(File file) throws IOException {
-        return CSVUtils.getCSVParser(file, SaleHeader.class);
-    }
 }

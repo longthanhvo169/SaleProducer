@@ -30,7 +30,6 @@ public class KafkaServiceImpl implements KafkaService {
     @Override
     public String createMessage(KafkaMessageForm kafkaMessageForm) throws JsonProcessingException {
         JSONObject data = new JSONObject(objectMapper.writeValueAsString(kafkaMessageForm));
-        log.info(data.toString());
         kafkaTemplate.send(kafkaMessageForm.getTopic(), kafkaMessageForm.getKey(), data.toString());
         return kafkaMessageForm.getUid();
     }
